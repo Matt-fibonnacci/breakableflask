@@ -6,7 +6,8 @@ jobs:
     steps:
       - name: Récupération du code
         uses: actions/checkout@v4
-      - name: Debug - contenu du dépôt
+        
+      - name: Debug
         run: ls -la
 
       - name: Dependances
@@ -25,7 +26,7 @@ jobs:
       - name: Récupération du code
         uses: actions/checkout@v4
         
-      - name: Debug - contenu du dépôt
+      - name: Debug
         run: ls -la
 
       - name: Analyse du Dockerfile

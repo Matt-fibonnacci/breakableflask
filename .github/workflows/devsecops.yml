@@ -32,7 +32,7 @@ jobs:
           exit-code: '1'
 
       - name: Build de l'image
-        run: docker build -t app:${{ github.sha }} .
+        run: docker build -t app:${{ github.sha }} /
 
       - name: Test Dockerfile
         uses: aquasecurity/trivy-action@v0.36.0

@@ -6,6 +6,8 @@ jobs:
     steps:
       - name: Récupération du code
         uses: actions/checkout@v4
+      - name: Debug - contenu du dépôt
+        run: ls -la
 
       - name: Dependances
         uses: aquasecurity/trivy-action@v0.36.0
@@ -22,6 +24,9 @@ jobs:
     steps:
       - name: Récupération du code
         uses: actions/checkout@v4
+        
+      - name: Debug - contenu du dépôt
+        run: ls -la
 
       - name: Analyse du Dockerfile
         uses: aquasecurity/trivy-action@v0.36.0

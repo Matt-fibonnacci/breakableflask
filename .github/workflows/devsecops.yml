@@ -4,21 +4,43 @@ jobs:
   Dependances:
     runs-on: ubuntu-latest
     steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
       - name: Dependances
-        run: |
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
-          trivy --version
-          trivy fs --scanners vuln --severity HIGH,CRITICAL --exit-code 1 requirements.txt
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: 'fs'
+          scan-ref: 'requirements.txt'
+          scanners: 'vuln'
+          severity: 'HIGH,CRITICAL'
+          exit-code: '1'
+
   Dockerfile:
     runs-on: ubuntu-latest
     needs: Dependances
     steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Analyse du Dockerfile
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: 'config'
+          scan-ref: '.'
+          severity: 'HIGH,CRITICAL'
+          exit-code: '1'
+
+      - name: Build de l'image
+        run: docker build -t app:${{ github.sha }} .
+
       - name: Test Dockerfile
-        run: |
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
-          trivy config --exit-code 1 --severity HIGH,CRITICAL Dockerfile
-          docker build -t app:${{ github.sha }} .
-          trivy image --severity HIGH,CRITICAL --exit-code 1 app:${{ github.sha }}
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: 'app:${{ github.sha }}'
+          severity: 'HIGH,CRITICAL'
+          exit-code: '1'
+
   Deploy:
     runs-on: ubuntu-latest
     needs: Dockerfile
